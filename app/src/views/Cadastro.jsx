@@ -12,17 +12,18 @@ import {
 
 import { cadastroController } from "../controllers/cadastroController";
 
-export default function CadastroScreen(navigation) {
-  const [nome, setNome] = useState("");
+export default function CadastroScreen({navigation}) {
+  const [nomeCompleto, setNomeCompleto] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
   const [error, setError] = useState("");
 
  async function handleCadastro() {
-    const result = await cadastroController(email, senha);
+    const result = await cadastroController(email, senha, nomeCompleto);
     if(result.success){
         alert('Usuário criado com sucesso')
+        navigation.goBack()
     }else{
         alert(result.message)
     }
@@ -41,7 +42,16 @@ export default function CadastroScreen(navigation) {
           <Text style={styles.title}>Cadastro</Text>
 
           {error !== "" && <Text style={styles.error}>{error}</Text>}
-
+          
+          <Text style={styles.label}>Nome completo</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Digite seu nome completo"
+            value={nomeCompleto}
+            onChangeText={setNomeCompleto}
+          >
+          
+          </TextInput>
     
           <Text style={styles.label}>Email</Text>
           <TextInput
