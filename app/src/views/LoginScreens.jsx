@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -19,6 +20,7 @@ export default function LoginScreen({navigation}) {
    const result = await loginController(email, senha);
    if(result.success){
       alert('Login realizado com sucesso')
+      navigation.navigate('Home')
    }else{
       alert('Erro ao fazer login')
    }
