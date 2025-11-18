@@ -1,15 +1,22 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { signOut } from 'firebase/auth';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { auth } from '../../../config';
 import Product from './Product';
 import User from './User';
 
 const Tab = createBottomTabNavigator();
 
-export default function App() {
+export default function App({navigation}) {
 
 
-  const handlerLogin = () => {
-
+  async function handlerLogout  () {
+    try{
+      await signOut(auth);
+      navigation.replace('Login');
+    }catch(error){
+      alert('Erro ao fazer logout' + error.message);
+    }
   }  
   return (
     <Tab.Navigator
@@ -31,7 +38,7 @@ export default function App() {
             size={25}
             color='#ffffffff'
             style={{marginRight: 15}}
-            onPress={handlerLogin}
+            onPress={handlerLogout}
             >
             </Ionicons>
         ),

@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import {
+  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
@@ -15,15 +16,24 @@ import { loginController } from "../controllers/loginController";
 export default function LoginScreen({navigation}) {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const formValido = email !== "" && senha !== "";
 
   async function handleLogin() {
-   const result = await loginController(email, senha);
+    try{
+      setLoading(true);
+      const result = await loginController(email, senha);
    if(result.success){
-      alert('Login realizado com sucesso')
       navigation.navigate('Home')
+      setLoading(false);
    }else{
       alert('Erro ao fazer login')
    }
+    }catch(error){
+      console.log(error)
+    }
+   
   }
 
   return (
@@ -48,9 +58,13 @@ export default function LoginScreen({navigation}) {
           onChangeText={setSenha}
         />
 
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
+        {loading ? (
+          <ActivityIndicator size="large"></ActivityIndicator>
+        ) : <TouchableOpacity style={[styles.button, {backgroundColor: formValido ? "#4A90E2" : "#999999"}]} 
+        onPress={handleLogin} 
+        disabled={!formValido}>
           <Text style={styles.buttonText}>Entrar</Text>
-        </TouchableOpacity>
+        </TouchableOpacity>}
         <TouchableOpacity onPress={() => navigation.navigate("Cadastro")}>
             <Text style={styles.conta}>Ainda não possui uma conta? Cadastre-se</Text>
         </TouchableOpacity>

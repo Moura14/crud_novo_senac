@@ -19,6 +19,8 @@ export default function CadastroScreen({navigation}) {
   const [confirmarSenha, setConfirmarSenha] = useState("");
   const [error, setError] = useState("");
 
+  const formValido = nomeCompleto !== "" && email !== "" && senha !== "" && confirmarSenha !== "" && senha === confirmarSenha;
+
  async function handleCadastro() {
     const result = await cadastroController(email, senha, nomeCompleto);
     if(result.success){
@@ -73,9 +75,16 @@ export default function CadastroScreen({navigation}) {
 
         
 
-          <TouchableOpacity style={styles.button} onPress={handleCadastro}>
-            <Text style={styles.buttonText}>Cadastrar</Text>
-          </TouchableOpacity>
+          <TouchableOpacity 
+  style={[
+    styles.button, 
+    { backgroundColor: formValido ? "#4A90E2" : "#999999" }
+  ]}
+  onPress={handleCadastro} 
+  disabled={!formValido}
+>
+  <Text style={styles.buttonText}>Cadastrar</Text>
+</TouchableOpacity>
          
         </ScrollView>
       </KeyboardAvoidingView>

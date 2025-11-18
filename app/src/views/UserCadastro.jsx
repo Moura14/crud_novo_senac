@@ -8,6 +8,8 @@ export default function ClienteForm() {
   const [endereco, setEndereco] = useState('');
   const [dataNascimento, setDataNascimento] = useState('');
 
+   const formValido = email !== "" && senha !== "" && nome !== "" && telefone !== "" && endereco !== "" && dataNascimento !== ""; 
+
   const handleSubmit = () => {
   };
 
@@ -62,7 +64,9 @@ export default function ClienteForm() {
             placeholder="DD/MM/AAAA"
           />
 
-          <Button title="Cadastrar Cliente" onPress={handleSubmit} />
+          <Button title="Cadastrar Cliente" onPress={handleSubmit} disabled={!formValido} style={{
+            backgroundColor: formValido ? "#4A90E2" : "#999999"
+          }} />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
