@@ -26,13 +26,14 @@ export default function LoginScreen({navigation}) {
       const result = await loginController(email, senha);
    if(result.success){
       navigation.navigate('Home')
-      setLoading(false);
    }else{
       alert('Erro ao fazer login')
    }
     }catch(error){
       console.log(error)
-    }
+    }finally{
+      setLoading(false);
+   }
    
   }
 

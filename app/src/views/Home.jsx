@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { signOut } from 'firebase/auth';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -13,6 +14,7 @@ export default function App({navigation}) {
   async function handlerLogout  () {
     try{
       await signOut(auth);
+      await AsyncStorage.removeItem('TokenUser');
       navigation.replace('Login');
     }catch(error){
       alert('Erro ao fazer logout' + error.message);
