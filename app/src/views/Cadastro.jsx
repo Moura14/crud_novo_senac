@@ -1,5 +1,6 @@
 import { useState } from "react";
 import {
+  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
@@ -16,12 +17,14 @@ export default function CadastroScreen({navigation}) {
   const [nomeCompleto, setNomeCompleto] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
-  const [confirmarSenha, setConfirmarSenha] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const formValido = nomeCompleto !== "" && email !== "" && senha !== "" && confirmarSenha !== "" && senha === confirmarSenha;
+  const formValido = nomeCompleto !== "" && email !== "" && senha !== "";
 
  async function handleCadastro() {
+  try{
+    setLoading(true);
     const result = await cadastroController(email, senha, nomeCompleto);
     if(result.success){
         alert('Usuário criado com sucesso')
@@ -29,7 +32,13 @@ export default function CadastroScreen({navigation}) {
     }else{
         alert(result.message)
     }
+  }catch(error){
+    console.log(error)
+  }finally{
+    setLoading(false);
   }
+  }
+    
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -75,7 +84,10 @@ export default function CadastroScreen({navigation}) {
 
         
 
-          <TouchableOpacity 
+          {loading ? (
+            <ActivityIndicator size="large" color="#4A90E2" style={{ marginTop: 20 }} />
+          ) : (
+            <TouchableOpacity 
   style={[
     styles.button, 
     { backgroundColor: formValido ? "#4A90E2" : "#999999" }
@@ -84,7 +96,7 @@ export default function CadastroScreen({navigation}) {
   disabled={!formValido}
 >
   <Text style={styles.buttonText}>Cadastrar</Text>
-</TouchableOpacity>
+</TouchableOpacity>)}
          
         </ScrollView>
       </KeyboardAvoidingView>
