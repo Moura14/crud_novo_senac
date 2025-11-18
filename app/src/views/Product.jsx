@@ -1,60 +1,79 @@
 // MinhaTela.jsx
 import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback, useState } from 'react';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { listarProdutos } from '../controllers/produtoController';
 
 
 
 export default function Product({navigation}) {
   const handlePress = () => {
     navigation.navigate('CadastroProduto')
+    console.log('dfijosadijf');
   }
+
+  const [produtos, setProdutos] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+useFocusEffect(
+  useCallback(() => {
+    async function carregarProdutos() {
+      try {
+        setLoading(true);
+
+        const resultado = await listarProdutos();
+        console.log(resultado);
+        setProdutos(resultado);
+
+      } catch (error) {
+        console.log("Erro ao carregar produtos:", error);
+
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    carregarProdutos();
+    
+    // Opcional: Adicionar uma função de limpeza
+    return () => {
+      // Qualquer lógica para limpar ao desfocar, se necessário
+    };
+  }, []) // Dependências vazias garantem que a função só seja recriada uma vez
+);
+
+
+
   return (
   <View style={styles.container}>
 
+
+    <ScrollView contentContainerStyle={{padding: 20}}>
+      {produtos.map((item) => (
+        <View key={item.id} style={styles.card}>
+          <View>
+        <Text style={styles.title}>{item.nome}</Text>
+        <Text style={styles.subtitle}>{item.descricao}</Text>
+      </View>
+      
+    
+      <View style={styles.actions}>
+        <TouchableOpacity onPress={() => console.log('editar')}>
+          <Ionicons name="create-outline" size={22} color="#4A90E2" />
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => console.log('excluir')}>
+          <Ionicons name="trash-outline" size={22} color="#4A90E2" />
+        </TouchableOpacity>
+      </View>
+        </View>
+      ))}
+    </ScrollView>
+    
     <TouchableOpacity style={styles.fab} onPress={handlePress}>
       <Text style={styles.fabText}>+</Text>
     </TouchableOpacity>
-
-  
-    <View style={styles.card}>
-      <View>
-        <Text style={styles.title}>Item</Text>
-        <Text style={styles.subtitle}>fsdsfdfs</Text>
-      </View>
-      
-
-    
-      <View style={styles.actions}>
-        <TouchableOpacity onPress={() => console.log('editar')}>
-          <Ionicons name="create-outline" size={22} color="#4A90E2" />
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => console.log('excluir')}>
-          <Ionicons name="trash-outline" size={22} color="#4A90E2" />
-        </TouchableOpacity>
-      </View>
-      
-    </View>
-     <View style={styles.card}>
-      <View>
-        <Text style={styles.title}>Item</Text>
-        <Text style={styles.subtitle}>fsdsfdfs</Text>
-      </View>
-      
-
-    
-      <View style={styles.actions}>
-        <TouchableOpacity onPress={() => console.log('editar')}>
-          <Ionicons name="create-outline" size={22} color="#4A90E2" />
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => console.log('excluir')}>
-          <Ionicons name="trash-outline" size={22} color="#4A90E2" />
-        </TouchableOpacity>
-      </View>
-      
-    </View>
-
   </View>
 );
 
@@ -63,7 +82,6 @@ export default function Product({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,                  
-    justifyContent: "center", 
     alignItems: "center",     
     backgroundColor: "#f2f2f2"
   },

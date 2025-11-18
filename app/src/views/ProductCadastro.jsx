@@ -13,20 +13,30 @@ export default function ProdutoForm({navigation}) {
   const categorias = ['Eletrônicos', 'Roupas', 'Alimentos', 'Livros'];
 
   async function handleSubmit () {
-    try{
-      setLoading(true);
-      const result = await cadastrarProduto(nome, descricao, categoria, preco);
-      navigation.goBack();
-      console.log(result);
-      if(result.docRef){
-        alert('Produto cadastrado com sucesso')
-      }
-    }catch(error){
-      console.log(error)
-    }finally{
-      setLoading(false);
+  try {
+    setLoading(true);
+
+    const idCriado = await cadastrarProduto(nome, descricao, categoria, preco);
+    console.log(idCriado);
+
+    if (idCriado) {
+      alert('Produto cadastrado com sucesso');
+      setNome('');
+      setDescricao('');
+      setCategoria('');
+      setPreco('');
+     
     }
-  };
+
+    
+
+  } catch(error) {
+    console.log(error);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <KeyboardAvoidingView
