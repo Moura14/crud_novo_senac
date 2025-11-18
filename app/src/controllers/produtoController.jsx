@@ -10,7 +10,7 @@ export async function cadastrarProduto(nome, descricao, categoria, preco) {
 
     if(!user) return null;
 
-    const ref = collection(db, 'user', user.uid, 'produtos');
+    const ref = collection(db, 'users', user.uid, 'produtos');
 
     const docRef = await addDoc(ref, {
         nome,
@@ -22,3 +22,4 @@ export async function cadastrarProduto(nome, descricao, categoria, preco) {
 
     return docRef.id;
 }
+
