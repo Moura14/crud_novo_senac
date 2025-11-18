@@ -36,11 +36,10 @@ useFocusEffect(
 
     carregarProdutos();
     
-    // Opcional: Adicionar uma função de limpeza
+
     return () => {
-      // Qualquer lógica para limpar ao desfocar, se necessário
     };
-  }, []) // Dependências vazias garantem que a função só seja recriada uma vez
+  }, [])
 );
 
 
@@ -55,6 +54,8 @@ useFocusEffect(
           <View>
         <Text style={styles.title}>{item.nome}</Text>
         <Text style={styles.subtitle}>{item.descricao}</Text>
+        <Text style={styles.subtitle}>{item.categoria}</Text>
+        <Text style={styles.subtitle}>{item.preco}</Text>
       </View>
       
     

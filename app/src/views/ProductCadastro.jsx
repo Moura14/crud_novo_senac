@@ -25,8 +25,9 @@ export default function ProdutoForm({navigation}) {
       setDescricao('');
       setCategoria('');
       setPreco('');
-     
+      
     }
+    navigation.goBack();
 
     
 
