@@ -1,5 +1,5 @@
 import { getAuth } from "firebase/auth";
-import { addDoc, collection, getDocs, getFirestore } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDocs, getFirestore } from "firebase/firestore";
 
 
 const db = getFirestore();
@@ -36,4 +36,16 @@ export async function listarProdutos() {
     }));
 
     return produtos;
+}
+
+export async function deletarProduto(produtoId) {
+    const user = getAuth().currentUser;
+
+    if(!user) return null;
+
+    const produtoRef = doc(db, 'users', user.uid, 'produtos', produtoId);
+
+    await deleteDoc(produtoRef);
+    console.log('Excluído com sucesso');
+    return true;
 }

@@ -2,83 +2,95 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { listarProdutos } from '../controllers/produtoController';
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { deletarProduto, listarProdutos } from '../controllers/produtoController';
 
 
 
-export default function Product({navigation}) {
-  const handlePress = () => {
-    navigation.navigate('CadastroProduto')
-    console.log('dfijosadijf');
-  }
-
+  export default function Product({ navigation }) {
   const [produtos, setProdutos] = useState([]);
   const [loading, setLoading] = useState(false);
 
-useFocusEffect(
-  useCallback(() => {
-    async function carregarProdutos() {
-      try {
-        setLoading(true);
+  const handlePress = () => {
+    navigation.navigate('CadastroProduto');
+    console.log('dfijosadijf');
+  };
 
-        const resultado = await listarProdutos();
-        console.log(resultado);
-        setProdutos(resultado);
+  const handleDelete = async (produtoId) => {
+    Alert.alert(
+      'Confirmar Exclusão',
+      'Tem certeza que deseja excluir este produto?',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Excluir',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await deletarProduto(produtoId);
+              setProdutos((prevProdutos) =>
+              prevProdutos.filter((item) => item.id !== produtoId)
+            );
+              alert('Produto excluído com sucesso');
+            } catch (error) {
+              console.log('Erro ao excluir produto:', error);
+            }
+          }
+        }
+      ]
+    );
+  };
 
-      } catch (error) {
-        console.log("Erro ao carregar produtos:", error);
-
-      } finally {
-        setLoading(false);
+  useFocusEffect(
+    useCallback(() => {
+      async function carregarProdutos() {
+        try {
+          setLoading(true);
+          const resultado = await listarProdutos();
+          console.log(resultado);
+          setProdutos(resultado);
+        } catch (error) {
+          console.log('Erro ao carregar produtos:', error);
+        } finally {
+          setLoading(false);
+        }
       }
-    }
-
-    carregarProdutos();
-    
-
-    return () => {
-    };
-  }, [])
-);
-
-
+      carregarProdutos();
+    }, [])
+  );
 
   return (
-  <View style={styles.container}>
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={{ padding: 20 }}>
+        {produtos.map((item) => (
+          <View key={item.id} style={styles.card}>
+            <View>
+              <Text style={styles.title}>{item.nome}</Text>
+              <Text style={styles.subtitle}>{item.descricao}</Text>
+              <Text style={styles.subtitle}>{item.categoria}</Text>
+              <Text style={styles.subtitle}>{item.preco}</Text>
+            </View>
+            <View style={styles.actions}>
+              <TouchableOpacity onPress={() => console.log('editar')}>
+                <Ionicons name="create-outline" size={22} color="#4A90E2" />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => handleDelete(item.id)}>
+                <Ionicons name="trash-outline" size={22} color="#4A90E2" />
+              </TouchableOpacity>
+            </View>
+          </View>
+        ))}
+      </ScrollView>
 
-
-    <ScrollView contentContainerStyle={{padding: 20}}>
-      {produtos.map((item) => (
-        <View key={item.id} style={styles.card}>
-          <View>
-        <Text style={styles.title}>{item.nome}</Text>
-        <Text style={styles.subtitle}>{item.descricao}</Text>
-        <Text style={styles.subtitle}>{item.categoria}</Text>
-        <Text style={styles.subtitle}>{item.preco}</Text>
-      </View>
-      
-    
-      <View style={styles.actions}>
-        <TouchableOpacity onPress={() => console.log('editar')}>
-          <Ionicons name="create-outline" size={22} color="#4A90E2" />
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => console.log('excluir')}>
-          <Ionicons name="trash-outline" size={22} color="#4A90E2" />
-        </TouchableOpacity>
-      </View>
-        </View>
-      ))}
-    </ScrollView>
-    
-    <TouchableOpacity style={styles.fab} onPress={handlePress}>
-      <Text style={styles.fabText}>+</Text>
-    </TouchableOpacity>
-  </View>
-);
-
+      <TouchableOpacity style={styles.fab} onPress={handlePress}>
+        <Text style={styles.fabText}>+</Text>
+      </TouchableOpacity>
+    </View>
+  );
 }
+
+
+
 
 const styles = StyleSheet.create({
   container: {
@@ -127,4 +139,4 @@ const styles = StyleSheet.create({
   actions: { flexDirection: "row", gap: 15 },
   iconButton: { padding: 4 }
 
-});
+})
