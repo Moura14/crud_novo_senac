@@ -1,5 +1,7 @@
 // MinhaTela.jsx
+import { Ionicons } from '@expo/vector-icons';
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+
 
 
 export default function Product({navigation}) {
@@ -7,12 +9,55 @@ export default function Product({navigation}) {
     navigation.navigate('CadastroProduto')
   }
   return (
-    <View style={styles.container}>
-      <TouchableOpacity style={styles.fab} onPress={handlePress}>
-       <Text style={styles.fabText}>+</Text>
-      </TouchableOpacity>
+  <View style={styles.container}>
+
+    <TouchableOpacity style={styles.fab} onPress={handlePress}>
+      <Text style={styles.fabText}>+</Text>
+    </TouchableOpacity>
+
+  
+    <View style={styles.card}>
+      <View>
+        <Text style={styles.title}>Item</Text>
+        <Text style={styles.subtitle}>fsdsfdfs</Text>
+      </View>
+      
+
+    
+      <View style={styles.actions}>
+        <TouchableOpacity onPress={() => console.log('editar')}>
+          <Ionicons name="create-outline" size={22} color="#4A90E2" />
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => console.log('excluir')}>
+          <Ionicons name="trash-outline" size={22} color="#4A90E2" />
+        </TouchableOpacity>
+      </View>
+      
     </View>
-  );
+     <View style={styles.card}>
+      <View>
+        <Text style={styles.title}>Item</Text>
+        <Text style={styles.subtitle}>fsdsfdfs</Text>
+      </View>
+      
+
+    
+      <View style={styles.actions}>
+        <TouchableOpacity onPress={() => console.log('editar')}>
+          <Ionicons name="create-outline" size={22} color="#4A90E2" />
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => console.log('excluir')}>
+          <Ionicons name="trash-outline" size={22} color="#4A90E2" />
+        </TouchableOpacity>
+      </View>
+      
+    </View>
+
+  </View>
+);
+
 }
 
 const styles = StyleSheet.create({
@@ -47,5 +92,20 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 30,
   },
+  card: {
+    backgroundColor: "#FFF",
+    padding: 15,
+    borderRadius: 12,
+    marginVertical: 8,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    shadowColor: "#000",
+    elevation: 3,
+    width: 350,
+  },
+  title: { fontSize: 18, fontWeight: "bold" },
+  subtitle: { fontSize: 14, color: "#666" },
+  actions: { flexDirection: "row", gap: 15 },
+  iconButton: { padding: 4 }
 
 });
