@@ -1,17 +1,31 @@
 import { Picker } from '@react-native-picker/picker';
 import { useState } from 'react';
-import { Button, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Button, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { cadastrarProduto } from '../controllers/produtoController';
 
-export default function ProdutoForm() {
+export default function ProdutoForm({navigation}) {
   const [nome, setNome] = useState('');
   const [descricao, setDescricao] = useState('');
   const [categoria, setCategoria] = useState('');
   const [preco, setPreco] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const categorias = ['Eletrônicos', 'Roupas', 'Alimentos', 'Livros'];
 
-  const handleSubmit = () => {
-
+  async function handleSubmit () {
+    try{
+      setLoading(true);
+      const result = await cadastrarProduto(nome, descricao, categoria, preco);
+      navigation.goBack();
+      console.log(result);
+      if(result.docRef){
+        alert('Produto cadastrado com sucesso')
+      }
+    }catch(error){
+      console.log(error)
+    }finally{
+      setLoading(false);
+    }
   };
 
   return (
@@ -64,7 +78,9 @@ export default function ProdutoForm() {
             keyboardType="numeric"
           />
 
-          <Button title="Cadastrar Produto" onPress={handleSubmit} />
+        {loading ? (
+          <ActivityIndicator size="large" color="#4A90E2" style={{ marginTop: 20 }} />
+        ) : (   <Button title="Cadastrar Produto" onPress={handleSubmit} />)}
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

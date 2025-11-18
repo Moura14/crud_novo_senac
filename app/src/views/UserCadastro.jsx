@@ -1,16 +1,18 @@
 import { useState } from 'react';
 import { Button, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 
+
 export default function ClienteForm() {
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [telefone, setTelefone] = useState('');
   const [endereco, setEndereco] = useState('');
   const [dataNascimento, setDataNascimento] = useState('');
-
-   const formValido = email !== "" && senha !== "" && nome !== "" && telefone !== "" && endereco !== "" && dataNascimento !== ""; 
+  const [loading, setLoading] = useState(false);
+  
 
   const handleSubmit = () => {
+   
   };
 
   return (
@@ -64,9 +66,7 @@ export default function ClienteForm() {
             placeholder="DD/MM/AAAA"
           />
 
-          <Button title="Cadastrar Cliente" onPress={handleSubmit} disabled={!formValido} style={{
-            backgroundColor: formValido ? "#4A90E2" : "#999999"
-          }} />
+          <Button title="Cadastrar Cliente" onPress={handleSubmit} />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
