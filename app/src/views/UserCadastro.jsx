@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Button, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { cadastrarCliente } from '../controllers/clienteController';
 
 
-export default function ClienteForm() {
+export default function ClienteForm({navigation}) {
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [telefone, setTelefone] = useState('');
@@ -11,8 +12,20 @@ export default function ClienteForm() {
   const [loading, setLoading] = useState(false);
   
 
-  const handleSubmit = () => {
-   
+  async function handleSubmit  () {
+    try{
+      setLoading(true)
+      const result = await cadastrarCliente(nome, email, telefone, endereco, dataNascimento);
+      console.log(result);
+      if(result.success){
+        alert('Cliente cadastrado com sucesso')
+        navigation.goBack()
+      }
+    }catch(e){
+      console.log(e)
+    }finally{
+      setLoading(false)
+    }
   };
 
   return (
