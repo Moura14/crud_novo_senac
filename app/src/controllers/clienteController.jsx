@@ -1,5 +1,5 @@
 import { getAuth } from "firebase/auth";
-import { addDoc, collection, getFirestore } from "firebase/firestore";
+import { addDoc, collection, getDocs, getFirestore } from "firebase/firestore";
 
 
 const db = getFirestore();
@@ -25,4 +25,19 @@ export async function cadastrarCliente(nome, email, telefone, endereco, dataNasc
     return {success: true, id: docRef.id}
 }
 
+
+export async function listarClientes() {
+    const user = getAuth().currentUser;
+    if(!user) return [];
+
+    const clienteRef = collection(db, 'users', user.uid, 'clientes');
+    const snapshot = await getDocs(clienteRef);
+
+    const clientes = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+    }));
+
+    return clientes;
+}
 

@@ -16,7 +16,6 @@ export default function ClienteForm({navigation}) {
     try{
       setLoading(true)
       const result = await cadastrarCliente(nome, email, telefone, endereco, dataNascimento);
-      console.log(result);
       if(result.success){
         alert('Cliente cadastrado com sucesso')
         navigation.goBack()

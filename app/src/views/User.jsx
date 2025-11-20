@@ -1,8 +1,37 @@
 // MinhaTela.jsx
 import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { listarClientes } from '../controllers/clienteController';
 
 export default function User({navigation}) {
+
+  const [cliente, setCliente] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+
+
+
+    
+  useFocusEffect(
+    useCallback(() => {
+        async function carregarClientes() {
+          try {
+            setLoading(true);
+            const resultado = await listarClientes();
+            console.log(resultado);
+            setCliente(resultado);
+          } catch (error) {
+            console.log('Erro ao carregar produtos:', error);
+          } finally {
+            setLoading(false);
+          }
+        }
+        carregarClientes();
+      }, [])
+  )
+  
 
   const handlePress = () => {
     navigation.navigate('CadastroCliente')
@@ -10,48 +39,33 @@ export default function User({navigation}) {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.fab} onPress={handlePress}>
-        <Text style={styles.fabText}>+</Text>
-      </TouchableOpacity>
-       <View style={styles.card}>
-      <View>
-        <Text style={styles.title}>Cliente da silva Santos Jr</Text>
-        <Text style={styles.subtitle}>22</Text>
-      </View>
-      
+          <ScrollView contentContainerStyle={{ padding: 20 }}>
+            {cliente.map((item) => (
+              <View key={item.id} style={styles.card}>
+                <View>
+                  <Text style={styles.nome}>{item.nome}</Text>
+                  <Text style={styles.email}>{item.descricao}</Text>
+                  <Text style={styles.telefone}>{item.categoria}</Text>
+                  <Text style={styles.endereco}>{item.preco}</Text>
+                  <Text style={styles.dataNascimento}>{item.preco}</Text>
 
+                </View>
+                <View style={styles.actions}>
+                  <TouchableOpacity onPress={() => console.log('editar')}>
+                    <Ionicons name="create-outline" size={22} color="#4A90E2" />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => handleDelete(item.id)}>
+                    <Ionicons name="trash-outline" size={22} color="#4A90E2" />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))}
+          </ScrollView>
     
-      <View style={styles.actions}>
-        <TouchableOpacity onPress={() => console.log('editar')}>
-          <Ionicons name="create-outline" size={22} color="#4A90E2" />
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => console.log('excluir')}>
-          <Ionicons name="trash-outline" size={22} color="#4A90E2" />
-        </TouchableOpacity>
-      </View>
-      
-    </View>
-    <View style={styles.card}>
-      <View>
-        <Text style={styles.title}>Cliente da silva Santos Jr</Text>
-        <Text style={styles.subtitle}>22</Text>
-      </View>
-      
-
-    
-      <View style={styles.actions}>
-        <TouchableOpacity onPress={() => console.log('editar')}>
-          <Ionicons name="create-outline" size={22} color="#4A90E2" />
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => console.log('excluir')}>
-          <Ionicons name="trash-outline" size={22} color="#4A90E2" />
-        </TouchableOpacity>
-      </View>
-      
-    </View>
-    </View>
+          <TouchableOpacity style={styles.fab} onPress={handlePress}>
+            <Text style={styles.fabText}>+</Text>
+          </TouchableOpacity>
+        </View>
   );
 }
 
