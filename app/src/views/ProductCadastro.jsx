@@ -20,7 +20,6 @@ export default function ProdutoForm({navigation}) {
     console.log(idCriado);
 
     if (idCriado) {
-      alert('Produto cadastrado com sucesso');
       setNome('');
       setDescricao('');
       setCategoria('');

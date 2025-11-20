@@ -40,8 +40,12 @@ export default function Index() {
         <Stack.Screen name="Login" component={LoginScreen} options={{headerShown: false}}></Stack.Screen>
         <Stack.Screen name="Cadastro" component={Cadastro} options={{headerShown: false}}></Stack.Screen>
         <Stack.Screen name="Home" component={Home} options={{headerShown: false}}></Stack.Screen>
-         <Stack.Screen name="CadastroProduto" component={ProductCadastro} options={{headerShown: false}}></Stack.Screen>
-         <Stack.Screen name="CadastroCliente" component={UserCadastro} options={{headerShown: false}}></Stack.Screen>
+         <Stack.Screen name="CadastroProduto" component={ProductCadastro} options={{headerShown: true, headerTitle: '',}}></Stack.Screen>
+         <Stack.Screen name="CadastroCliente" component={UserCadastro} options={{headerShown: true, headerTitle: '',  headerStyle: {
+    elevation: 0,        
+    shadowOpacity: 0,    
+    borderBottomWidth: 0 
+  }}}></Stack.Screen>
       </Stack.Navigator>
   );
 }

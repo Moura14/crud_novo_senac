@@ -2,7 +2,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { deletarCliente, listarClientes } from '../controllers/clienteController';
 
 export default function User({navigation}) {
@@ -47,7 +47,6 @@ export default function User({navigation}) {
                 setCliente((prevCliente) =>
                 prevCliente.filter((cliente) => cliente.id !== clienteId)
               );
-                alert('Produto excluído com sucesso');
               } catch (error) {
                 console.log('Erro ao excluir produto:', error);
               }
@@ -63,35 +62,57 @@ export default function User({navigation}) {
   }
 
   return (
-    <View style={styles.container}>
-          <ScrollView contentContainerStyle={{ padding: 20 }}>
-            {cliente.map((item) => (
-              <View key={item.id} style={styles.card}>
-                <View>
-                  <Text style={styles.nome}>{item.nome}</Text>
-                  <Text style={styles.email}>{item.descricao}</Text>
-                  <Text style={styles.telefone}>{item.categoria}</Text>
-                  <Text style={styles.endereco}>{item.preco}</Text>
-                  <Text style={styles.dataNascimento}>{item.preco}</Text>
+  <View style={styles.container}>
 
-                </View>
-                <View style={styles.actions}>
-                  <TouchableOpacity onPress={() => console.log('editar')}>
-                    <Ionicons name="create-outline" size={22} color="#4A90E2" />
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={() => handleDelete(item.id)}>
-                    <Ionicons name="trash-outline" size={22} color="#4A90E2" />
-                  </TouchableOpacity>
-                </View>
+    {loading ? (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#4A90E2" />
+      </View>
+    ) : (
+      <ScrollView
+        contentContainerStyle={{
+          flex: cliente.length === 0 ? 1 : undefined,
+          padding: 20,
+          justifyContent: cliente.length === 0 ? 'center' : 'flex-start',
+          alignItems: cliente.length === 0 ? 'center' : 'stretch'
+        }}
+      >
+        {cliente.length === 0 ? (
+          <View style={styles.emptyContainer}>
+            <Text>Nenhum cliente encontrado</Text>
+          </View>
+        ) : (
+          cliente.map((item) => (
+            <View key={item.id} style={styles.card}>
+              <View>
+                <Text style={styles.nome}>{item.nome}</Text>
+                <Text style={styles.email}>{item.email}</Text>
+                <Text style={styles.telefone}>{item.endereco}</Text>
+                <Text style={styles.endereco}>{item.telefone}</Text>
               </View>
-            ))}
-          </ScrollView>
-    
-          <TouchableOpacity style={styles.fab} onPress={handlePress}>
-            <Text style={styles.fabText}>+</Text>
-          </TouchableOpacity>
-        </View>
-  );
+
+              <View style={styles.actions}>
+                <TouchableOpacity onPress={() => console.log("editar")}>
+                  <Ionicons name="create-outline" size={22} color="#4A90E2" />
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => handleDelete(item.id)}>
+                  <Ionicons name="trash-outline" size={22} color="#4A90E2" />
+                </TouchableOpacity>
+              </View>
+            </View>
+          ))
+        )}
+      </ScrollView>
+    )}
+
+    <TouchableOpacity style={styles.fab} onPress={handlePress}>
+      <Text style={styles.fabText}>+</Text>
+    </TouchableOpacity>
+
+  </View>
+);
+
 }
 
 const styles = StyleSheet.create({

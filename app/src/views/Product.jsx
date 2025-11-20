@@ -2,7 +2,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback, useState } from 'react';
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { deletarProduto, listarProdutos } from '../controllers/produtoController';
 
 
@@ -31,7 +31,6 @@ import { deletarProduto, listarProdutos } from '../controllers/produtoController
               setProdutos((prevProdutos) =>
               prevProdutos.filter((item) => item.id !== produtoId)
             );
-              alert('Produto excluído com sucesso');
             } catch (error) {
               console.log('Erro ao excluir produto:', error);
             }
@@ -61,27 +60,44 @@ import { deletarProduto, listarProdutos } from '../controllers/produtoController
 
   return (
     <View style={styles.container}>
-      <ScrollView contentContainerStyle={{ padding: 20 }}>
-        {produtos.map((item) => (
-          <View key={item.id} style={styles.card}>
-            <View>
-              <Text style={styles.title}>{item.nome}</Text>
-              <Text style={styles.subtitle}>{item.descricao}</Text>
-              <Text style={styles.subtitle}>{item.categoria}</Text>
-              <Text style={styles.subtitle}>{item.preco}</Text>
-            </View>
-            <View style={styles.actions}>
-              <TouchableOpacity onPress={() => console.log('editar')}>
-                <Ionicons name="create-outline" size={22} color="#4A90E2" />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => handleDelete(item.id)}>
-                <Ionicons name="trash-outline" size={22} color="#4A90E2" />
-              </TouchableOpacity>
-            </View>
-          </View>
-        ))}
-      </ScrollView>
+      {loading ?(
+        <ActivityIndicator size="large" color="#4A90E2" style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} />
+      ) : (
+        <ScrollView contentContainerStyle={{ 
+          flex: produtos.length === 0 ? 1 : undefined,
+          padding: 20,
+          justifyContent: produtos.length === 0 ? 'center' : 'flex-start',
+          alignItems: produtos.length === 0 ? 'center' : 'stretch'
+         }}>
+  {produtos.length === 0 ? (
+    <View style={styles.emptyContainer}>
+      <Text>Nenhum produto encontrado</Text>
+    </View>
+  ) : (
+    produtos.map((item) => (
+      <View key={item.id} style={styles.card}>
+        <View>
+          <Text style={styles.title}>{item.nome}</Text>
+          <Text style={styles.subtitle}>{item.descricao}</Text>
+          <Text style={styles.subtitle}>{item.categoria}</Text>
+          <Text style={styles.subtitle}>{item.preco}</Text>
+        </View>
 
+        <View style={styles.actions}>
+          <TouchableOpacity onPress={() => console.log('editar')}>
+            <Ionicons name="create-outline" size={22} color="#4A90E2" />
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => handleDelete(item.id)}>
+            <Ionicons name="trash-outline" size={22} color="#4A90E2" />
+          </TouchableOpacity>
+        </View>
+      </View>
+    ))
+  )}
+</ScrollView>
+      )}
+      
       <TouchableOpacity style={styles.fab} onPress={handlePress}>
         <Text style={styles.fabText}>+</Text>
       </TouchableOpacity>
