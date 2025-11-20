@@ -2,8 +2,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { listarClientes } from '../controllers/clienteController';
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { deletarCliente, listarClientes } from '../controllers/clienteController';
 
 export default function User({navigation}) {
 
@@ -31,6 +31,31 @@ export default function User({navigation}) {
         carregarClientes();
       }, [])
   )
+
+  const handleDelete = async (clienteId) => {
+      Alert.alert(
+        'Confirmar Exclusão',
+        'Tem certeza que deseja excluir este produto?',
+        [
+          { text: 'Cancelar', style: 'cancel' },
+          {
+            text: 'Excluir',
+            style: 'destructive',
+            onPress: async () => {
+              try {
+                await deletarCliente(clienteId);
+                setCliente((prevCliente) =>
+                prevCliente.filter((cliente) => cliente.id !== clienteId)
+              );
+                alert('Produto excluído com sucesso');
+              } catch (error) {
+                console.log('Erro ao excluir produto:', error);
+              }
+            }
+          }
+        ]
+      );
+    };
   
 
   const handlePress = () => {

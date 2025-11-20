@@ -1,5 +1,5 @@
 import { getAuth } from "firebase/auth";
-import { addDoc, collection, getDocs, getFirestore } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDocs, getFirestore } from "firebase/firestore";
 
 
 const db = getFirestore();
@@ -41,3 +41,15 @@ export async function listarClientes() {
     return clientes;
 }
 
+
+export async function deletarCliente(clienteId) {
+    const user = getAuth().currentUser;
+
+    if(!user) return null;
+
+    const clienteRef = doc(db, 'users', user.uid, 'clientes', clienteId);
+
+    await deleteDoc(clienteRef);
+    console.log('Excluído com sucesso');
+    return true;
+}
