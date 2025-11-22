@@ -1,6 +1,6 @@
 import { Picker } from '@react-native-picker/picker';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Button, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Alert, Button, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { cadastrarProduto, editarProduto } from '../controllers/produtoController';
 
 export default function ProdutoForm({navigation, route}) {
@@ -26,6 +26,19 @@ export default function ProdutoForm({navigation, route}) {
   
 
   async function handleSubmit () {
+
+    const missing = [];
+          if (!dadosFormulario.nome || !dadosFormulario.nome.toString().trim()) missing.push('Nome');
+          if (!dadosFormulario.descricao || !dadosFormulario.descricao.toString().trim()) missing.push('Descrição');
+          if (!dadosFormulario.categoria || !dadosFormulario.categoria.toString().trim()) missing.push('Categoria');
+          if (!dadosFormulario.preco || !dadosFormulario.preco.toString().trim()) missing.push('Preço');
+          if (!dadosFormulario.telefone || !dadosFormulario.telefone.toString().trim()) missing.push('Telefone');
+
+    
+          if (missing.length) {
+            Alert.alert('Campos obrigatórios', `Preencha os campos: ${missing.join(', ')}`);
+            return;
+          }
     const dadosSalvar = {...dadosFormulario};
     delete dadosSalvar.id;
 

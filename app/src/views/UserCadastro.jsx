@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Button, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Alert, Button, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { cadastrarCliente, editarCliente } from '../controllers/clienteController';
 
 
@@ -27,6 +27,18 @@ export default function ClienteForm({navigation, route}) {
   
 
   async function handleSubmit () {
+    
+      const missing = [];
+      if (!dadosFormulario.nome || !dadosFormulario.nome.toString().trim()) missing.push('Nome');
+      if (!dadosFormulario.email || !dadosFormulario.email.toString().trim()) missing.push('Email');
+      if (!dadosFormulario.telefone || !dadosFormulario.telefone.toString().trim()) missing.push('Telefone');
+      if (!dadosFormulario.dataNascimento || !dadosFormulario.dataNascimento.toString().trim()) missing.push('Data de Nascimento');
+
+      if (missing.length) {
+        Alert.alert('Campos obrigatórios', `Preencha os campos: ${missing.join(', ')}`);
+        return;
+      }
+
       const dadosSalvar = {...dadosFormulario};
       delete dadosSalvar.id;
   
