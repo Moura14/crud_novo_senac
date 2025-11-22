@@ -94,11 +94,11 @@ export default function User({navigation}) {
           cliente.map((item) => (
             <View key={item.id} style={styles.card}>
               <View>
-                <Text style={styles.nome}>{item.nome}</Text>
-                <Text style={styles.email}>{item.email}</Text>
-                <Text style={styles.telefone}>{item.endereco}</Text>
-                <Text style={styles.endereco}>{item.telefone}</Text>
-                <Text style={styles.endereco}>{item.dataNascimento}</Text>
+                <Text style={styles.title}>{item.nome}</Text>
+                <Text style={styles.subtitle}>{item.email}</Text>
+                <Text style={styles.subtitle}>{item.endereco}</Text>
+                <Text style={styles.subtitle}>{item.telefone}</Text>
+                <Text style={styles.subtitle}>{item.dataNascimento}</Text>
 
               </View>
 
