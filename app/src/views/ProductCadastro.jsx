@@ -6,6 +6,7 @@ import { cadastrarProduto, editarProduto } from '../controllers/produtoControlle
 export default function ProdutoForm({navigation, route}) {
 
   const [loading, setLoading] = useState(false);
+  const [displayTelefone, setDisplayTelefone] = useState('');
 
   const categorias = ['Eletrônicos', 'Roupas', 'Alimentos', 'Livros'];
 
@@ -14,7 +15,8 @@ export default function ProdutoForm({navigation, route}) {
     nome: '',
     descricao: '',
     categoria: '',
-    preco: ''
+    preco: '',
+    telefone: ''
   });
 
   const isEditiing = !!dadosFormulario.id;
@@ -50,16 +52,70 @@ export default function ProdutoForm({navigation, route}) {
 };
 
 
-const handleInputChange = (key, value) => {
-  setDadosFormulario(prevDados => ({
-    ...prevDados,
-    [key]: value
-  }))
+const handleInputChange = (campo, valor) => {
+  if (campo === "preco") {
+    valor = formatCurrency(valor);
+  }
+
+  setDadosFormulario((prev) => ({
+    ...prev,
+    [campo]: valor
+  }));
+};
+
+const handlePhoneChange = (text) => {
+  const digits = text.replace(/\D/g, '');
+  setDadosFormulario((prev) => ({
+    ...prev,
+    telefone: digits
+  }));
+};
+
+// keep displayTelefone in sync with raw telefone
+useEffect(() => {
+  setDisplayTelefone(formatPhone(dadosFormulario.telefone));
+}, [dadosFormulario.telefone]);
+
+
+function formatCurrency(value) {
+  const number = Number(value.replace(/\D/g, "")) / 100;
+  if (isNaN(number)) return "";
+  
+  return number.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
 }
+
+function formatPhone(value) {
+  const digits = (value || "").toString().replace(/\D/g, "");
+  if (!digits) return "";
+
+
+  const ddd = digits.slice(0, 2);
+  const rest = digits.slice(2);
+
+  if (digits.length <= 2) {
+    return `(${ddd}`;
+  }
+
+  if (rest.length <= 4) {
+    return `(${ddd}) ${rest}`;
+  }
+
+  
+  if (rest.length <= 8) {
+    return `(${ddd}) ${rest.slice(0, 4)}-${rest.slice(4)}`.replace(/-$/,'');
+  }
+
+  return `(${ddd}) ${rest.slice(0, 5)}-${rest.slice(5, 9)}`;
+}
+
 
 useEffect(() => {
   if(produto){
     setDadosFormulario(produto)
+    setDisplayTelefone(formatPhone(produto.telefone || ''))
   }
 }, [produto])
 
@@ -105,6 +161,17 @@ useEffect(() => {
               ))}
             </Picker>
           </View>
+
+          <Text style={styles.label}>Telefone</Text>
+          <TextInput
+  style={styles.input}
+  value={displayTelefone}
+  onChangeText={handlePhoneChange}
+  placeholder="(DD) 9XXXX-XXXX"
+  keyboardType="phone-pad"
+  maxLength={16}
+/>
+
 
           <Text style={styles.label}>Preço</Text>
           <TextInput

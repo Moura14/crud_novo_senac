@@ -22,6 +22,62 @@ export default function User({navigation}) {
       }
     }
 
+    function formatDateDisplay(value) {
+        const s = (value || '').toString();
+
+  
+        const iso = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+        if (iso) return `${iso[3]}/${iso[2]}/${iso[1]}`;
+
+      
+        const digits = s.replace(/\D/g, '');
+        if (digits.length === 8) {
+          return `${digits.slice(0,2)}/${digits.slice(2,4)}/${digits.slice(4,8)}`;
+        }
+
+        return s || '';
+}
+
+
+function formatPhoneDisplay(value) {
+     const s = (value || '').toString().trim();
+  if (!s) return '';
+
+  
+  let digits = s.replace(/\D/g, '');
+
+
+  if (digits.startsWith('55') && digits.length > 2) digits = digits.slice(2);
+
+
+  if (digits.length === 11) {
+    return `(${digits.slice(0,2)}) ${digits.slice(2,7)}-${digits.slice(7)}`;
+  }
+
+ 
+  if (digits.length === 10) {
+    return `(${digits.slice(0,2)}) ${digits.slice(2,6)}-${digits.slice(6)}`;
+  }
+
+
+  if (digits.length === 9) {
+    return `${digits.slice(0,5)}-${digits.slice(5)}`;
+  }
+
+
+  if (digits.length === 8) {
+    return `${digits.slice(0,4)}-${digits.slice(4)}`;
+  }
+
+  
+  if (digits.length > 11) {
+    const ddd = digits.slice(0,2);
+    const rest = digits.slice(2);
+    return `(${ddd}) ${rest.slice(0, rest.length - 4)}-${rest.slice(-4)}`;
+  }
+
+  return s;
+}
 
     
   useFocusEffect(
@@ -97,8 +153,8 @@ export default function User({navigation}) {
                 <Text style={styles.title}>{item.nome}</Text>
                 <Text style={styles.subtitle}>{item.email}</Text>
                 <Text style={styles.subtitle}>{item.endereco}</Text>
-                <Text style={styles.subtitle}>{item.telefone}</Text>
-                <Text style={styles.subtitle}>{item.dataNascimento}</Text>
+                <Text style={styles.subtitle}>{formatPhoneDisplay(item.telefone)}</Text>
+                <Text style={styles.subtitle}>{formatDateDisplay(item.dataNascimento)}</Text>
 
               </View>
 
