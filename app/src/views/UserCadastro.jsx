@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Button, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { cadastrarCliente } from '../controllers/clienteController';
 
 
@@ -17,7 +17,6 @@ export default function ClienteForm({navigation}) {
       setLoading(true)
       const result = await cadastrarCliente(nome, email, telefone, endereco, dataNascimento);
       if(result.success){
-        alert('Cliente cadastrado com sucesso')
         navigation.goBack()
       }
     }catch(e){
@@ -77,8 +76,12 @@ export default function ClienteForm({navigation}) {
             onChangeText={setDataNascimento}
             placeholder="DD/MM/AAAA"
           />
-
-          <Button title="Cadastrar Cliente" onPress={handleSubmit} />
+          {loading ? (
+             <ActivityIndicator size="large" color="#4A90E2" style={{ marginTop: 20 }} />
+          ) : (
+            <Button title="Cadastrar Cliente" onPress={handleSubmit} />
+          )}
+          
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

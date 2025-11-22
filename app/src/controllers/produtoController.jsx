@@ -1,5 +1,6 @@
 import { getAuth } from "firebase/auth";
-import { addDoc, collection, deleteDoc, doc, getDocs, getFirestore } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDocs, getFirestore, updateDoc } from "firebase/firestore";
+import { carregarLocal, salvarProdutoLocal } from '../controllers/localStorageService';
 
 
 const db = getFirestore();
@@ -12,15 +13,22 @@ export async function cadastrarProduto(nome, descricao, categoria, preco) {
 
     const ref = collection(db, 'users', user.uid, 'produtos');
 
-    const docRef = await addDoc(ref, {
-        nome,
+    const produto = {
+        nome, 
         descricao,
         categoria,
-        preco,
+        preco, 
         createdAt: new Date()
-    });
+    }
 
-    return docRef;
+    const docRef = await addDoc(ref, produto);
+
+
+    const produtoId = {id: docRef.id, ...produto}
+
+    await salvarProdutoLocal(produtoId)
+
+    return produtoId;
 }
 
 export async function listarProdutos() {
@@ -35,6 +43,13 @@ export async function listarProdutos() {
         ...doc.data(),
     }));
 
+
+    await carregarLocal();
+
+    console.log('[Debug] Usuário atual', getAuth().currentUser)
+    console.log("[DEBUG] LOCAL STORAGE ATUAL ->", await carregarLocal());
+
+
     return produtos;
 }
 
@@ -47,5 +62,26 @@ export async function deletarProduto(produtoId) {
 
     await deleteDoc(produtoRef);
     console.log('Excluído com sucesso');
+    return true;
+}
+
+
+export async function editarProduto(produtoId, nome, descricao, categoria, preco){
+    const user = getAuth().currentUser;
+    
+    if(!user) return null;
+
+    const produtoRef = doc(db, 'users', user.uid,'produtos', produtoId);
+
+    await updateDoc(produtoRef, {
+            nome,
+            descricao,
+            categoria,
+            preco,
+            updateAt: new Date().toISOString()
+
+    });
+
+    console.log('Produto atualizado')
     return true;
 }

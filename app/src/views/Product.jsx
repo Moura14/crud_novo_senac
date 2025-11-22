@@ -10,11 +10,21 @@ import { deletarProduto, listarProdutos } from '../controllers/produtoController
   export default function Product({ navigation }) {
   const [produtos, setProdutos] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [produtoEdicao, setProdutoEdicao] = useState([])
 
   const handlePress = () => {
     navigation.navigate('CadastroProduto');
-    console.log('dfijosadijf');
   };
+
+  const handleEditar = (produtoId) => {
+    const produtoEditar = produtos.find(p => p.id == produtoId)
+
+    if(produtoEditar){
+      navigation.navigate('CadastroProduto', {
+        produtoParaEdicao: produtoEditar
+      });
+    }
+  }
 
   const handleDelete = async (produtoId) => {
     Alert.alert(
@@ -84,7 +94,7 @@ import { deletarProduto, listarProdutos } from '../controllers/produtoController
         </View>
 
         <View style={styles.actions}>
-          <TouchableOpacity onPress={() => console.log('editar')}>
+          <TouchableOpacity onPress={() => handleEditar(item.id)}>
             <Ionicons name="create-outline" size={22} color="#4A90E2" />
           </TouchableOpacity>
 

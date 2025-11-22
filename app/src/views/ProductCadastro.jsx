@@ -1,32 +1,44 @@
 import { Picker } from '@react-native-picker/picker';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, Button, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import { cadastrarProduto } from '../controllers/produtoController';
+import { cadastrarProduto, editarProduto } from '../controllers/produtoController';
 
-export default function ProdutoForm({navigation}) {
-  const [nome, setNome] = useState('');
-  const [descricao, setDescricao] = useState('');
-  const [categoria, setCategoria] = useState('');
-  const [preco, setPreco] = useState('');
+export default function ProdutoForm({navigation, route}) {
+
   const [loading, setLoading] = useState(false);
 
   const categorias = ['Eletrônicos', 'Roupas', 'Alimentos', 'Livros'];
 
+  const [dadosFormulario, setDadosFormulario] = useState({
+    id: '',
+    nome: '',
+    descricao: '',
+    categoria: '',
+    preco: ''
+  });
+
+  const isEditiing = !!dadosFormulario.id;
+
+  const produto = route.params?.produtoParaEdicao
+
+  
+
   async function handleSubmit () {
+    const dadosSalvar = {...dadosFormulario};
+    delete dadosSalvar.id;
+
   try {
-    setLoading(true);
-
-    const idCriado = await cadastrarProduto(nome, descricao, categoria, preco);
-    console.log(idCriado);
-
-    if (idCriado) {
-      setNome('');
-      setDescricao('');
-      setCategoria('');
-      setPreco('');
-      
-    }
+    if(isEditiing){
+      setLoading(true)
+      const result = await editarProduto(dadosFormulario.id,dadosFormulario.nome, dadosFormulario.descricao, dadosFormulario.categoria, dadosFormulario.preco);
+      navigation.goBack();
+    }else{
+      setLoading(true);
+      const idCriado = await cadastrarProduto(dadosFormulario.nome, dadosFormulario.descricao, dadosFormulario.categoria, dadosFormulario.preco);
+      console.log(idCriado);
     navigation.goBack();
+    }
+    
 
     
 
@@ -36,6 +48,20 @@ export default function ProdutoForm({navigation}) {
     setLoading(false);
   }
 };
+
+
+const handleInputChange = (key, value) => {
+  setDadosFormulario(prevDados => ({
+    ...prevDados,
+    [key]: value
+  }))
+}
+
+useEffect(() => {
+  if(produto){
+    setDadosFormulario(produto)
+  }
+}, [produto])
 
 
   return (
@@ -52,16 +78,17 @@ export default function ProdutoForm({navigation}) {
           <Text style={styles.label}>Nome do Produto</Text>
           <TextInput
             style={styles.input}
-            value={nome}
-            onChangeText={setNome}
+            value={dadosFormulario.nome}
+            onChangeText={(text) => handleInputChange('nome', text)}
             placeholder="Digite o nome do produto"
+          
           />
 
           <Text style={styles.label}>Descrição</Text>
           <TextInput
             style={[styles.input, { height: 80 }]}
-            value={descricao}
-            onChangeText={setDescricao}
+            value={dadosFormulario.descricao}
+            onChangeText={(text) => handleInputChange('descricao', text)}
             placeholder="Digite a descrição"
             multiline
           />
@@ -69,8 +96,8 @@ export default function ProdutoForm({navigation}) {
           <Text style={styles.label}>Categoria</Text>
           <View style={styles.pickerContainer}>
             <Picker
-              selectedValue={categoria}
-              onValueChange={(itemValue) => setCategoria(itemValue)}
+              selectedValue={dadosFormulario.categoria}
+              onValueChange={(text) => handleInputChange('categoria', text)}
             >
               <Picker.Item label="Selecione uma categoria" value="" />
               {categorias.map((cat, index) => (
@@ -82,15 +109,15 @@ export default function ProdutoForm({navigation}) {
           <Text style={styles.label}>Preço</Text>
           <TextInput
             style={styles.input}
-            value={preco}
-            onChangeText={setPreco}
+            value={dadosFormulario.preco}
+            onChangeText={(text) => handleInputChange('preco', text)}
             placeholder="Digite o preço"
             keyboardType="numeric"
           />
 
         {loading ? (
           <ActivityIndicator size="large" color="#4A90E2" style={{ marginTop: 20 }} />
-        ) : (   <Button title="Cadastrar Produto" onPress={handleSubmit} />)}
+        ) : (   <Button title= {isEditiing ? 'Salvar Edição' :  "Cadastrar Produto"} onPress={handleSubmit} />)}
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

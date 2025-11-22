@@ -63,7 +63,6 @@ export default function User({navigation}) {
 
   return (
   <View style={styles.container}>
-
     {loading ? (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" color="#4A90E2" />
