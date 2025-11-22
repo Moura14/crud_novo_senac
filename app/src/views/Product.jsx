@@ -10,7 +10,6 @@ import { deletarProduto, listarProdutos } from '../controllers/produtoController
   export default function Product({ navigation }) {
   const [produtos, setProdutos] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [produtoEdicao, setProdutoEdicao] = useState([])
 
   const handlePress = () => {
     navigation.navigate('CadastroProduto');

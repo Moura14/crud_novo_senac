@@ -1,5 +1,5 @@
 import { getAuth } from "firebase/auth";
-import { addDoc, collection, deleteDoc, doc, getDocs, getFirestore } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDocs, getFirestore, updateDoc } from "firebase/firestore";
 
 
 const db = getFirestore();
@@ -52,4 +52,25 @@ export async function deletarCliente(clienteId) {
     await deleteDoc(clienteRef);
     console.log('Excluído com sucesso');
     return true;
+}
+
+
+export async function editarCliente(clienteId, nome, email, telefone, endereco, dataNascimento){
+    const user = getAuth().currentUser;
+
+    if(!user) return null;
+
+    const clienteRef = doc(db, 'users', user.uid, 'clientes', clienteId);
+
+    await updateDoc(clienteRef, {
+        nome,
+        email,
+        telefone,
+        endereco,
+        dataNascimento,
+        updateAt: new Date().toISOString()
+    });
+
+    console.log('Cliente atualizado com sucesso')
+    return true
 }

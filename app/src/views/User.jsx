@@ -12,6 +12,16 @@ export default function User({navigation}) {
 
 
 
+    const handleEditar = (clienteId) => {
+      const clienteEditar = cliente.find(c => c.id == clienteId)
+
+      if(clienteEditar){
+        navigation.navigate('CadastroCliente', {
+        clienteEdicao: clienteEditar
+      });
+      }
+    }
+
 
     
   useFocusEffect(
@@ -88,10 +98,12 @@ export default function User({navigation}) {
                 <Text style={styles.email}>{item.email}</Text>
                 <Text style={styles.telefone}>{item.endereco}</Text>
                 <Text style={styles.endereco}>{item.telefone}</Text>
+                <Text style={styles.endereco}>{item.dataNascimento}</Text>
+
               </View>
 
               <View style={styles.actions}>
-                <TouchableOpacity onPress={() => console.log("editar")}>
+                <TouchableOpacity onPress={() => handleEditar(item.id)}>
                   <Ionicons name="create-outline" size={22} color="#4A90E2" />
                 </TouchableOpacity>
 

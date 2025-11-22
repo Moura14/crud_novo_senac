@@ -1,30 +1,65 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, Button, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import { cadastrarCliente } from '../controllers/clienteController';
+import { cadastrarCliente, editarCliente } from '../controllers/clienteController';
 
 
-export default function ClienteForm({navigation}) {
-  const [nome, setNome] = useState('');
-  const [email, setEmail] = useState('');
-  const [telefone, setTelefone] = useState('');
-  const [endereco, setEndereco] = useState('');
-  const [dataNascimento, setDataNascimento] = useState('');
+export default function ClienteForm({navigation, route}) {
+  
   const [loading, setLoading] = useState(false);
+
+  const [dadosFormulario, setDadosFormulario] = useState(
+    {
+      id: '',
+      nome: '',
+      email: '',
+      telefone: '',
+      endereco: '',
+      dataNascimento: ''
+    }
+  )
+
+  const isEditiing = !!dadosFormulario.id;
+
+  const cliente = route.params?.clienteEdicao
+
+ 
   
 
-  async function handleSubmit  () {
-    try{
-      setLoading(true)
-      const result = await cadastrarCliente(nome, email, telefone, endereco, dataNascimento);
-      if(result.success){
-        navigation.goBack()
+  async function handleSubmit () {
+      const dadosSalvar = {...dadosFormulario};
+      delete dadosSalvar.id;
+  
+    try {
+      if(isEditiing){
+        setLoading(true)
+        const result = await editarCliente(dadosFormulario.id,dadosFormulario.nome, dadosFormulario.email, dadosFormulario.telefone, dadosFormulario.endereco, dadosFormulario.dataNascimento);
+        navigation.goBack();
+      }else{
+        setLoading(true);
+        const idCriado = await cadastrarCliente(dadosFormulario.nome, dadosFormulario.email, dadosFormulario.telefone, dadosFormulario.endereco, dadosFormulario.dataNascimento);
+        console.log(idCriado);
+      navigation.goBack();
       }
-    }catch(e){
-      console.log(e)
-    }finally{
-      setLoading(false)
+    } catch(error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
+  
+  useEffect(() => {
+    if(cliente){
+      setDadosFormulario(cliente)
+    }
+  }, [cliente])
+
+  const handleInputChange = (key, value) => {
+  setDadosFormulario(prevDados => ({
+    ...prevDados,
+    [key]: value
+  }))
+}
+
 
   return (
     <KeyboardAvoidingView
@@ -37,16 +72,16 @@ export default function ClienteForm({navigation}) {
           <Text style={styles.label}>Nome</Text>
           <TextInput
             style={styles.input}
-            value={nome}
-            onChangeText={setNome}
+            value={dadosFormulario.nome}
+            onChangeText={(text) => handleInputChange('nome', text)}
             placeholder="Digite o nome"
           />
 
           <Text style={styles.label}>Email</Text>
           <TextInput
             style={styles.input}
-            value={email}
-            onChangeText={setEmail}
+            value={dadosFormulario.email}
+            onChangeText={(text) => handleInputChange('email', text)}
             placeholder="Digite o email"
             keyboardType="email-address"
           />
@@ -54,8 +89,8 @@ export default function ClienteForm({navigation}) {
           <Text style={styles.label}>Telefone</Text>
           <TextInput
             style={styles.input}
-            value={telefone}
-            onChangeText={setTelefone}
+            value={dadosFormulario.telefone}
+            onChangeText={(text) => handleInputChange('telefone', text)}
             placeholder="Digite o telefone"
             keyboardType="phone-pad"
           />
@@ -63,8 +98,8 @@ export default function ClienteForm({navigation}) {
           <Text style={styles.label}>Endereço</Text>
           <TextInput
             style={[styles.input, { height: 80 }]}
-            value={endereco}
-            onChangeText={setEndereco}
+            value={dadosFormulario.endereco}
+            onChangeText={(text) => handleInputChange('endereco', text)}
             placeholder="Digite o endereço"
             multiline
           />
@@ -72,14 +107,14 @@ export default function ClienteForm({navigation}) {
           <Text style={styles.label}>Data de Nascimento</Text>
           <TextInput
             style={styles.input}
-            value={dataNascimento}
-            onChangeText={setDataNascimento}
+            value={dadosFormulario.dataNascimento}
+            onChangeText={(text) => handleInputChange('dataNascimento', text)}
             placeholder="DD/MM/AAAA"
           />
           {loading ? (
              <ActivityIndicator size="large" color="#4A90E2" style={{ marginTop: 20 }} />
           ) : (
-            <Button title="Cadastrar Cliente" onPress={handleSubmit} />
+            <Button title={isEditiing ? 'Editar Cliente' : "Cadastrar Cliente"} onPress={handleSubmit} />
           )}
           
         </View>
