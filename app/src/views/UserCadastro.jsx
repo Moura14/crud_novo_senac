@@ -127,7 +127,7 @@ const handlePhoneChange = (text) => {
     <KeyboardAvoidingView
       style={{ flex: 1 }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 0}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 60 : 100}
     >
       <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
         <View style={styles.container}>
@@ -197,8 +197,9 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   label: {
-    marginBottom: 5,
-    fontWeight: 'bold',
+   marginBottom: 10,
+    marginTop: 15,
+    fontSize: 16,
   },
   input: {
     borderWidth: 1,

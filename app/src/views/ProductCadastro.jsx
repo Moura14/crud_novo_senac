@@ -164,14 +164,13 @@ useEffect(() => {
 
           <Text style={styles.label}>Telefone</Text>
           <TextInput
-  style={styles.input}
-  value={displayTelefone}
-  onChangeText={handlePhoneChange}
-  placeholder="(DD) 9XXXX-XXXX"
-  keyboardType="phone-pad"
-  maxLength={16}
-/>
-
+            style={styles.input}
+            value={formatPhone(dadosFormulario.telefone)}
+            onChangeText={(text) => handlePhoneChange(text)}
+            placeholder="(DD) 9XXXX-XXXX"
+            keyboardType="phone-pad"
+            maxLength={15}
+          />
 
           <Text style={styles.label}>Preço</Text>
           <TextInput
@@ -200,8 +199,9 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   label: {
-    marginBottom: 5,
-    fontWeight: 'bold',
+    marginBottom: 10,
+    marginTop: 15,
+    fontSize: 16,
   },
   input: {
     borderWidth: 1,
