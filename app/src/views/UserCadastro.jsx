@@ -1,11 +1,17 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, Button, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { ActivityIndicator, Alert, Button, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { cadastrarCliente, editarCliente } from '../controllers/clienteController';
 
 
 export default function ClienteForm({navigation, route}) {
   
   const [loading, setLoading] = useState(false);
+  const [estado, setEstado] = useState('');
+  const [enderecoData, setEnderecoData] = useState(null);
+  const [logradouro, setLogradouro] = useState('');
+  const [bairro, setBairro] = useState('');
+  const [uf, setUf] = useState('');
 
   const [dadosFormulario, setDadosFormulario] = useState(
     {
@@ -59,6 +65,26 @@ export default function ClienteForm({navigation, route}) {
       setLoading(false);
     }
   };
+
+  async function fetchEndereco(cep) {
+    try{
+      setLoading(true);
+      const result = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+    const data = await result.json();
+    
+    setEnderecoData(data.endereco);
+    setLogradouro(data.logradouro)
+    setBairro(data.bairro)
+    setEstado(data.estado)
+    setUf(data.uf)
+
+    }catch(error){
+      alert('Erro ao buscar endereço:', error);
+    }finally{
+      setLoading(false);
+    }
+    
+  }
   
   useEffect(() => {
   if (!cliente) return;
@@ -134,6 +160,14 @@ const handlePhoneChange = (text) => {
     setDisplayDate(formatDate(digits));
   };
 
+   function formatarCEP(text) {
+  return text
+    .replace(/\D/g, "")          
+    .replace(/(\d{5})(\d)/, "$1-$2") 
+    .slice(0, 9);            
+}
+
+
 
   return (
     <KeyboardAvoidingView
@@ -170,14 +204,72 @@ const handlePhoneChange = (text) => {
             maxLength={15}
           />
 
+          <Text style={styles.label}>CEP</Text>
+          <View style={styles.enderecoContainer}>
+            <TextInput
+              style={styles.enderecoInput}
+              value={dadosFormulario.endereco}
+              onChangeText={(text) => {
+                const cepFormatado = formatarCEP(text);
+                handleInputChange('endereco', cepFormatado)}
+              }
+              placeholder="CEP"
+              keyboardType="numeric"
+              multiline
+            />
+            {loading ? (
+              <ActivityIndicator size="small" color="#4A90E2" style={{ marginTop: 8 }} />
+            ) : (
+              <TouchableOpacity style={styles.iconButton} onPress={() => fetchEndereco(dadosFormulario.endereco)}>
+              <Ionicons name="search" size={20} color="#4A90E2" />
+            </TouchableOpacity>
+            )}
+          </View>
+
           <Text style={styles.label}>Endereço</Text>
-          <TextInput
-            style={[styles.input, { height: 80 }]}
-            value={dadosFormulario.endereco}
-            onChangeText={(text) => handleInputChange('endereco', text)}
-            placeholder="Digite o endereço"
-            multiline
-          />
+          <View style={styles.enderecoContainer}>
+            <TextInput
+              style={styles.enderecoInput}
+              value={logradouro}
+              onChangeText={setLogradouro}
+              placeholder="Endereço"
+              multiline
+            />
+          </View>
+
+          <Text style={styles.label}>Bairro</Text>
+          <View style={styles.enderecoContainer}>
+            <TextInput
+              style={styles.enderecoInput}
+              value={bairro}
+              onChangeText={setBairro}
+              placeholder="Bairro"
+              multiline
+            />
+          </View>
+
+           <Text style={styles.label}>Estado</Text>
+          <View style={styles.enderecoContainer}>
+            <TextInput
+              style={styles.enderecoInput}
+              value={estado}
+              onChangeText={setEstado}
+              placeholder="Estado"
+              multiline
+            />
+          </View>
+
+          <Text style={styles.label}>UF</Text>
+          <View style={styles.enderecoContainer}>
+            <TextInput
+              style={styles.enderecoInput}
+              value={uf}
+              onChangeText={setUf}
+              placeholder="UF"
+              multiline
+            />
+          </View>
+         
 
           <Text style={styles.label}>Data de Nascimento</Text>
           <TextInput
@@ -221,4 +313,25 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     height: 40,
   },
+  enderecoContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    marginBottom: 15,
+    paddingHorizontal: 10,
+  },
+  enderecoInput: {
+    flex: 1,
+    paddingVertical: 8,
+    fontSize: 14,
+    
+  },
+  iconButton: {
+    padding: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 8
+  }
 });

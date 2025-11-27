@@ -155,7 +155,7 @@ useEffect(() => {
 
           <Text style={styles.label}>Descrição</Text>
           <TextInput
-            style={[styles.input, { height: 80 }]}
+            style={styles.input}
             value={dadosFormulario.descricao}
             onChangeText={(text) => handleInputChange('descricao', text)}
             placeholder="Digite a descrição"
