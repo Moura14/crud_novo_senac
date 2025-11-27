@@ -71,12 +71,18 @@ export default function ClienteForm({navigation, route}) {
       setLoading(true);
       const result = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
     const data = await result.json();
+    if(data.erro == "true"){
+      console.log('CPF não encontrado')
+      alert('CEP não encontrado.');
+      return;
+    }
     
     setEnderecoData(data.endereco);
     setLogradouro(data.logradouro)
     setBairro(data.bairro)
     setEstado(data.estado)
     setUf(data.uf)
+    console.log(data);
 
     }catch(error){
       alert('Erro ao buscar endereço:', error);
