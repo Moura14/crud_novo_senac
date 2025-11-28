@@ -15,8 +15,9 @@ export default function ProdutoForm({navigation, route}) {
     nome: '',
     descricao: '',
     categoria: '',
+    telefone: '',
     preco: '',
-    telefone: ''
+    
   });
 
   const isEditiing = !!dadosFormulario.id;
@@ -31,8 +32,9 @@ export default function ProdutoForm({navigation, route}) {
           if (!dadosFormulario.nome || !dadosFormulario.nome.toString().trim()) missing.push('Nome');
           if (!dadosFormulario.descricao || !dadosFormulario.descricao.toString().trim()) missing.push('Descrição');
           if (!dadosFormulario.categoria || !dadosFormulario.categoria.toString().trim()) missing.push('Categoria');
+            if (!dadosFormulario.telefone || !dadosFormulario.telefone.toString().trim()) missing.push('Telefone');
           if (!dadosFormulario.preco || !dadosFormulario.preco.toString().trim()) missing.push('Preço');
-          if (!dadosFormulario.telefone || !dadosFormulario.telefone.toString().trim()) missing.push('Telefone');
+        
 
     
           if (missing.length) {
@@ -45,11 +47,11 @@ export default function ProdutoForm({navigation, route}) {
   try {
     if(isEditiing){
       setLoading(true)
-      const result = await editarProduto(dadosFormulario.id,dadosFormulario.nome, dadosFormulario.descricao, dadosFormulario.categoria, dadosFormulario.preco);
+      const result = await editarProduto(dadosFormulario.id,dadosFormulario.nome, dadosFormulario.descricao, dadosFormulario.categoria, dadosFormulario.preco, dadosFormulario.telefone);
       navigation.goBack();
     }else{
       setLoading(true);
-      const idCriado = await cadastrarProduto(dadosFormulario.nome, dadosFormulario.descricao, dadosFormulario.categoria, dadosFormulario.preco);
+      const idCriado = await cadastrarProduto(dadosFormulario.nome, dadosFormulario.descricao, dadosFormulario.categoria, dadosFormulario.preco, dadosFormulario.telefone);
       console.log(idCriado);
     navigation.goBack();
     }
@@ -179,7 +181,7 @@ useEffect(() => {
           <TextInput
             style={styles.input}
             value={formatPhone(dadosFormulario.telefone)}
-            onChangeText={(text) => handlePhoneChange(text)}
+            onChangeText={(text) => handleInputChange( 'telefone',text)}
             placeholder="(DD) 9XXXX-XXXX"
             keyboardType="phone-pad"
             maxLength={15}

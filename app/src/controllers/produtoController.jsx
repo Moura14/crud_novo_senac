@@ -6,7 +6,7 @@ import { carregarLocal, salvarProdutoLocal } from '../controllers/localStorageSe
 const db = getFirestore();
 
 
-export async function cadastrarProduto(nome, descricao, categoria, preco) {
+export async function cadastrarProduto(nome, descricao, categoria, telefone, preco) {
     const user = getAuth().currentUser;
 
     if(!user) return null;
@@ -17,6 +17,7 @@ export async function cadastrarProduto(nome, descricao, categoria, preco) {
         nome, 
         descricao,
         categoria,
+        telefone,
         preco, 
         createdAt: new Date()
     }

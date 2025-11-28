@@ -25,6 +25,9 @@ import { deletarProduto, listarProdutos } from '../controllers/produtoController
     }
   }
 
+  
+
+
   const handleDelete = async (produtoId) => {
     Alert.alert(
       'Confirmar Exclusão',
@@ -48,6 +51,46 @@ import { deletarProduto, listarProdutos } from '../controllers/produtoController
       ]
     );
   };
+
+  function formatPhoneDisplay(value) {
+     const s = (value || '').toString().trim();
+  if (!s) return '';
+
+  
+  let digits = s.replace(/\D/g, '');
+
+
+  if (digits.startsWith('55') && digits.length > 2) digits = digits.slice(2);
+
+
+  if (digits.length === 11) {
+    return `(${digits.slice(0,2)}) ${digits.slice(2,7)}-${digits.slice(7)}`;
+  }
+
+ 
+  if (digits.length === 10) {
+    return `(${digits.slice(0,2)}) ${digits.slice(2,6)}-${digits.slice(6)}`;
+  }
+
+
+  if (digits.length === 9) {
+    return `${digits.slice(0,5)}-${digits.slice(5)}`;
+  }
+
+
+  if (digits.length === 8) {
+    return `${digits.slice(0,4)}-${digits.slice(4)}`;
+  }
+
+  
+  if (digits.length > 11) {
+    const ddd = digits.slice(0,2);
+    const rest = digits.slice(2);
+    return `(${ddd}) ${rest.slice(0, rest.length - 4)}-${rest.slice(-4)}`;
+  }
+
+  return s;
+}
 
   useFocusEffect(
     useCallback(() => {
@@ -89,7 +132,9 @@ import { deletarProduto, listarProdutos } from '../controllers/produtoController
           <Text style={styles.title}>{item.nome}</Text>
           <Text style={styles.subtitle}>{item.descricao}</Text>
           <Text style={styles.subtitle}>{item.categoria}</Text>
+           <Text style={styles.subtitle}>{formatPhoneDisplay(item.telefone)}</Text>
           <Text style={styles.subtitle}>{item.preco}</Text>
+         
         </View>
 
         <View style={styles.actions}>
