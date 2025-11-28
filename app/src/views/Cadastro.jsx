@@ -30,7 +30,7 @@ export default function CadastroScreen({navigation}) {
         alert('Usuário criado com sucesso')
         navigation.goBack()
     }else{
-        alert(result.message)
+        alert('E-mail já cadastrado');
     }
   }catch(error){
     console.log(error)

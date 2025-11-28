@@ -27,7 +27,7 @@ export default function LoginScreen({navigation}) {
    if(result.success){
       navigation.navigate('Home')
    }else{
-      alert('Erro ao fazer login')
+      alert('E-mail ou senha inválidos');
    }
     }catch(error){
       console.log(error)
